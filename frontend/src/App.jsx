@@ -6,8 +6,8 @@ const STEPS = [
   { id: 'Plan', title: 'Step 3: Generate & Print' }
 ];
 
-// High contrast pastel colors for easy reading and ink-saving printing
-const PALETTE = ['#dbeafe', '#d1fae5', '#fef3c7', '#fee2e2', '#f3e8ff', '#ccfbf1'];
+// Refined pastel palette for student classes
+const PALETTE = ['#e0f2fe', '#dcfce7', '#fef9c3', '#fee2e2', '#f3e8ff', '#ffedd5', '#f1f5f9'];
 
 export default function App() {
   const [activeStep, setActiveStep] = useState('Classes');
@@ -87,6 +87,7 @@ export default function App() {
     }
 
     setPlan(newPlan);
+    setActiveStep('Plan');
   };
 
   const getClassColor = (className) => {
@@ -95,51 +96,149 @@ export default function App() {
   };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '40px 20px', fontFamily: 'Arial, sans-serif', color: '#000' }}>
+    <div className="app-wrapper">
       
+      {/* 
+        CLEAN UI CSS 
+        All styling is organized here for a modern, refined aesthetic.
+      */}
       <style>{`
-        body { background-color: #fdfdfc; }
-        * { box-sizing: border-box; }
-        
-        .input-field {
-          width: 100%; padding: 12px; font-size: 16px;
-          border: 1px solid #888; border-radius: 4px; margin-top: 6px;
+        :root {
+          --primary: #2563eb;
+          --primary-hover: #1d4ed8;
+          --bg: #f8fafc;
+          --surface: #ffffff;
+          --border: #e2e8f0;
+          --text-main: #0f172a;
+          --text-muted: #64748b;
+          --danger: #ef4444;
+          --danger-bg: #fef2f2;
+          --success: #10b981;
+          --radius-md: 8px;
+          --radius-lg: 12px;
+          --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+          --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-        .input-field:focus { border-color: #000; outline: none; box-shadow: 0 0 0 2px rgba(0,0,0,0.1); }
-        
-        .form-label { font-weight: bold; font-size: 15px; display: block; margin-top: 15px; }
-        .help-text { font-size: 13px; color: #555; display: block; margin-top: 4px; }
-        
-        .primary-btn {
-          background: #000; color: #fff; border: none; padding: 14px 28px;
-          font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 20px;
-        }
-        .primary-btn:hover { background: #333; }
 
+        body { 
+          background-color: var(--bg); 
+          color: var(--text-main);
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          margin: 0;
+          -webkit-font-smoothing: antialiased;
+        }
+
+        * { box-sizing: border-box; }
+
+        .app-wrapper { max-width: 1040px; margin: 0 auto; padding: 40px 24px; }
+
+        /* Typography */
+        h1 { font-size: 2.2rem; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.02em; }
+        h2 { font-size: 1.25rem; font-weight: 600; margin: 0 0 20px; color: var(--text-main); }
+        .subtitle { color: var(--text-muted); font-size: 1.05rem; margin: 0; }
+
+        /* Navigation Steps */
+        .step-nav { display: flex; gap: 12px; margin: 40px 0; }
+        .step-btn {
+          flex: 1; padding: 14px 20px; font-size: 1rem; font-weight: 600; 
+          border-radius: var(--radius-md); border: 1px solid transparent;
+          cursor: pointer; transition: all 0.2s ease; text-align: center;
+        }
+        .step-btn.active { background: var(--surface); color: var(--primary); border-color: var(--primary); box-shadow: var(--shadow-sm); }
+        .step-btn.inactive { background: var(--border); color: var(--text-muted); }
+        .step-btn.inactive:hover { background: #cbd5e1; color: var(--text-main); }
+
+        /* Panels & Cards */
+        .panel { 
+          background: var(--surface); padding: 32px; border-radius: var(--radius-lg); 
+          box-shadow: var(--shadow-md); border: 1px solid var(--border); margin-bottom: 32px; 
+        }
+        .item-card {
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 16px 20px; background: var(--surface); border: 1px solid var(--border);
+          border-radius: var(--radius-md); margin-bottom: 12px; box-shadow: var(--shadow-sm);
+        }
+        
+        /* Forms */
+        .form-grid { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-label { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
+        .input-hint { font-size: 0.8rem; color: var(--text-muted); }
+        .input-field {
+          padding: 10px 14px; font-size: 1rem; border: 1px solid #cbd5e1; 
+          border-radius: var(--radius-md); outline: none; transition: border 0.2s;
+        }
+        .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+
+        /* Buttons */
+        .btn {
+          padding: 10px 20px; font-size: 0.95rem; font-weight: 600; border-radius: var(--radius-md);
+          cursor: pointer; border: none; transition: background 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger-outline { background: var(--danger-bg); color: var(--danger); border: 1px solid #fca5a5; padding: 8px 16px; font-size: 0.85rem; }
+        .btn-danger-outline:hover { background: #fee2e2; }
+
+        /* Error Banner */
+        .error-banner {
+          background: var(--danger-bg); border-left: 4px solid var(--danger); color: #991b1b;
+          padding: 16px 20px; border-radius: 4px; margin-bottom: 24px; font-weight: 500; font-size: 0.95rem;
+        }
+
+        /* --- PRINTABLE GRID STYLES --- */
+        .print-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--border); padding-bottom: 16px; margin-bottom: 32px; }
+        .print-title { font-size: 1.75rem; font-weight: 700; margin: 0; color: var(--text-main); }
+        .print-meta { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .front-board {
+          background: #f1f5f9; color: var(--text-muted); text-align: center; padding: 12px;
+          border-radius: var(--radius-md); font-weight: 600; letter-spacing: 0.1em; font-size: 0.85rem;
+          margin-bottom: 32px; border: 1px dashed #cbd5e1;
+        }
+
+        .desk-grid { display: grid; gap: 24px; }
+        .desk { border: 1px solid var(--border); border-radius: var(--radius-md); background: #f8fafc; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .desk-label { background: #e2e8f0; color: #475569; text-align: center; padding: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .seats-container { display: flex; padding: 12px; gap: 12px; background: white; }
+        
+        .seat {
+          flex: 1; padding: 16px 8px; text-align: center; border-radius: 6px;
+          border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center;
+        }
+        .seat-empty { border: 1px dashed #cbd5e1; background: #f8fafc; color: #94a3b8; font-size: 0.85rem; }
+        .seat-class { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
+        .seat-roll { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
+
+        /* Media Print overrides */
         @media print {
-          body { background: #fff; }
+          body { background: white; }
           .no-print { display: none !important; }
-          .page-break { page-break-after: always; }
+          .page-break { page-break-after: always; margin-bottom: 0; }
+          .app-wrapper { padding: 0; max-width: 100%; }
+          .desk { border: 1px solid #94a3b8; box-shadow: none; break-inside: avoid; }
+          .desk-label { background: #f1f5f9; color: #1e293b; border-bottom: 1px solid #94a3b8; }
+          .seat { border: 1px solid #94a3b8; }
+          .print-header { border-bottom-color: #cbd5e1; }
           @page { margin: 0.5in; }
         }
       `}</style>
 
-      <header className="no-print" style={{ textAlign: 'center', marginBottom: '40px', borderBottom: '2px solid #000', paddingBottom: '20px' }}>
-        <h1 style={{ fontSize: '32px', margin: '0 0 10px 0', textTransform: 'uppercase', letterSpacing: '1px' }}>Exam Seating Planner</h1>
-        <p style={{ fontSize: '18px', color: '#444', margin: 0 }}>Follow the 3 steps below to generate the seating chart.</p>
+      {/* --- HEADER --- */}
+      <header className="no-print" style={{ textAlign: 'center' }}>
+        <h1>Exam Seating Planner</h1>
+        <p className="subtitle">Configure your classes and rooms to auto-generate a mixed seating chart.</p>
       </header>
 
-      <nav className="no-print" style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
+      {/* --- NAVIGATION STEPS --- */}
+      <nav className="step-nav no-print">
         {STEPS.map(step => (
           <button 
             key={step.id} 
             onClick={() => setActiveStep(step.id)}
-            style={{ 
-              flex: 1, padding: '16px', border: '2px solid #000', cursor: 'pointer',
-              backgroundColor: activeStep === step.id ? '#000' : '#fff',
-              color: activeStep === step.id ? '#fff' : '#000',
-              fontSize: '18px', fontWeight: 'bold'
-            }}
+            className={`step-btn ${activeStep === step.id ? 'active' : 'inactive'}`}
           >
             {step.title}
           </button>
@@ -147,116 +246,132 @@ export default function App() {
       </nav>
 
       {error && (
-        <div className="no-print" style={{ background: '#ffeeee', border: '2px solid #cc0000', color: '#cc0000', padding: '16px', marginBottom: '30px', fontWeight: 'bold', fontSize: '18px' }}>
-          Error: {error}
+        <div className="error-banner no-print">
+          {error}
         </div>
       )}
 
       <main>
+        {/* =========================================
+            STEP 1: CLASSES 
+        ========================================= */}
         {activeStep === 'Classes' && (
           <section className="no-print">
-            <div style={{ background: '#f9f9f9', border: '1px solid #ccc', padding: '30px', marginBottom: '40px', borderRadius: '8px' }}>
-              <h2 style={{ marginTop: 0, borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>Add a Class</h2>
+            <div className="panel">
+              <h2>Add a Class</h2>
               
-              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                <div style={{ flex: '1 1 250px' }}>
-                  <label className="form-label">Class Name</label>
-                  <input className="input-field" value={classForm.name} onChange={e => setClassForm({...classForm, name: e.target.value})} />
-                  <span className="help-text">Example: 10th Grade Sec A</span>
+              <div className="form-grid">
+                <div className="input-group" style={{ flex: '1 1 200px' }}>
+                  <label className="input-label">Class Name</label>
+                  <input className="input-field" placeholder="e.g. 10th Grade Sec A" value={classForm.name} onChange={e => setClassForm({...classForm, name: e.target.value})} />
                 </div>
 
-                <div style={{ flex: '1 1 200px' }}>
-                  <label className="form-label">Roll Number Prefix (Optional)</label>
-                  <input className="input-field" value={classForm.prefix} onChange={e => setClassForm({...classForm, prefix: e.target.value})} />
-                  <span className="help-text">Example: CS-</span>
+                <div className="input-group" style={{ flex: '1 1 150px' }}>
+                  <label className="input-label">Roll Prefix (Optional)</label>
+                  <input className="input-field" placeholder="e.g. CS-" value={classForm.prefix} onChange={e => setClassForm({...classForm, prefix: e.target.value})} />
                 </div>
 
-                <div style={{ flex: '0 1 150px' }}>
-                  <label className="form-label">Total Students</label>
+                <div className="input-group" style={{ flex: '0 1 120px' }}>
+                  <label className="input-label">Total Students</label>
                   <input className="input-field" type="number" min="1" value={classForm.count} onChange={e => setClassForm({...classForm, count: Number(e.target.value)})} />
-                  <span className="help-text">Total taking the exam</span>
                 </div>
               </div>
 
-              <button className="primary-btn" onClick={addClass}>+ Add Class</button>
+              <button className="btn btn-primary" onClick={addClass}>+ Add Class</button>
             </div>
 
-            <h2>Added Classes</h2>
-            {classes.length === 0 ? <p style={{ color: '#666' }}>No classes added yet.</p> : (
-              <div style={{ display: 'grid', gap: '10px' }}>
-                {classes.map(c => (
-                  <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', background: '#fff', border: '2px solid #000', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '18px' }}>
-                      <strong>{c.name}</strong> 
-                      <span style={{ color: '#555', marginLeft: '15px' }}>Total Students: {c.count} (Rolls: {c.prefix}1 to {c.prefix}{c.count})</span>
+            <div style={{ padding: '0 10px' }}>
+              <h3 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '12px' }}>Configured Classes</h3>
+              {classes.length === 0 ? <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No classes added yet. Start by adding one above.</p> : (
+                <div>
+                  {classes.map(c => (
+                    <div key={c.id} className="item-card">
+                      <div>
+                        <strong style={{ fontSize: '1.1rem' }}>{c.name}</strong> 
+                        <span style={{ color: 'var(--text-muted)', marginLeft: '12px', fontSize: '0.9rem' }}>
+                          {c.count} Students &bull; Series: {c.prefix}1 - {c.prefix}{c.count}
+                        </span>
+                      </div>
+                      <button className="btn btn-danger-outline" onClick={() => deleteClass(c.id)}>Remove</button>
                     </div>
-                    <button onClick={() => deleteClass(c.id)} style={{ background: '#fff', border: '2px solid #cc0000', color: '#cc0000', padding: '8px 16px', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>Remove</button>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </section>
         )}
 
+        {/* =========================================
+            STEP 2: ROOMS 
+        ========================================= */}
         {activeStep === 'Rooms' && (
           <section className="no-print">
-            <div style={{ background: '#f9f9f9', border: '1px solid #ccc', padding: '30px', marginBottom: '40px', borderRadius: '8px' }}>
-              <h2 style={{ marginTop: 0, borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>Add an Exam Room</h2>
+            <div className="panel">
+              <h2>Add an Exam Room</h2>
               
-              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                <div style={{ flex: '1 1 250px' }}>
-                  <label className="form-label">Room Name</label>
-                  <input className="input-field" value={roomForm.name} onChange={e => setRoomForm({...roomForm, name: e.target.value})} />
-                  <span className="help-text">Example: Room 104</span>
+              <div className="form-grid">
+                <div className="input-group" style={{ flex: '1 1 200px' }}>
+                  <label className="input-label">Room Name</label>
+                  <input className="input-field" placeholder="e.g. Hall A" value={roomForm.name} onChange={e => setRoomForm({...roomForm, name: e.target.value})} />
                 </div>
 
-                <div style={{ flex: '0 1 120px' }}>
-                  <label className="form-label">Rows</label>
+                <div className="input-group" style={{ flex: '0 1 100px' }}>
+                  <label className="input-label">Rows</label>
                   <input className="input-field" type="number" min="1" value={roomForm.rows} onChange={e => setRoomForm({...roomForm, rows: Number(e.target.value)})} />
-                  <span className="help-text">Horizontal rows</span>
                 </div>
 
-                <div style={{ flex: '0 1 120px' }}>
-                  <label className="form-label">Columns</label>
+                <div className="input-group" style={{ flex: '0 1 100px' }}>
+                  <label className="input-label">Columns</label>
                   <input className="input-field" type="number" min="1" value={roomForm.cols} onChange={e => setRoomForm({...roomForm, cols: Number(e.target.value)})} />
-                  <span className="help-text">Desks per row</span>
+                  <span className="input-hint">Desks per row</span>
                 </div>
 
-                <div style={{ flex: '0 1 150px' }}>
-                  <label className="form-label">Seats / Desk</label>
+                <div className="input-group" style={{ flex: '0 1 120px' }}>
+                  <label className="input-label">Seats / Desk</label>
                   <input className="input-field" type="number" min="1" value={roomForm.studentsPerBench} onChange={e => setRoomForm({...roomForm, studentsPerBench: Number(e.target.value)})} />
-                  <span className="help-text">Students per desk</span>
                 </div>
               </div>
 
-              <button className="primary-btn" onClick={addRoom}>+ Add Room</button>
+              <button className="btn btn-primary" onClick={addRoom}>+ Add Room</button>
             </div>
 
-            <h2>Added Rooms</h2>
-            {rooms.length === 0 ? <p style={{ color: '#666' }}>No rooms added yet.</p> : (
-              <div style={{ display: 'grid', gap: '10px' }}>
-                {rooms.map(r => (
-                  <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', background: '#fff', border: '2px solid #000', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '18px' }}>
-                      <strong>{r.name}</strong> 
-                      <span style={{ color: '#555', marginLeft: '15px' }}>{r.rows} rows × {r.cols} columns. <strong>Total Capacity: {r.rows * r.cols * r.studentsPerBench}</strong></span>
+            <div style={{ padding: '0 10px' }}>
+              <h3 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '12px' }}>Configured Rooms</h3>
+              {rooms.length === 0 ? <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>No rooms added yet. Start by adding one above.</p> : (
+                <div>
+                  {rooms.map(r => (
+                    <div key={r.id} className="item-card">
+                      <div>
+                        <strong style={{ fontSize: '1.1rem' }}>{r.name}</strong> 
+                        <span style={{ color: 'var(--text-muted)', marginLeft: '12px', fontSize: '0.9rem' }}>
+                          {r.rows} × {r.cols} layout &bull; <strong>Capacity: {r.rows * r.cols * r.studentsPerBench}</strong>
+                        </span>
+                      </div>
+                      <button className="btn btn-danger-outline" onClick={() => deleteRoom(r.id)}>Remove</button>
                     </div>
-                    <button onClick={() => deleteRoom(r.id)} style={{ background: '#fff', border: '2px solid #cc0000', color: '#cc0000', padding: '8px 16px', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>Remove</button>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </section>
         )}
 
+        {/* =========================================
+            STEP 3: SEATING PLAN 
+        ========================================= */}
         {activeStep === 'Plan' && (
           <section>
-            <div className="no-print" style={{ textAlign: 'center', padding: '40px', background: '#f9f9f9', border: '1px solid #ccc', marginBottom: '40px', borderRadius: '8px' }}>
-              <h2 style={{ marginTop: 0 }}>Final Step: Generate Chart</h2>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
-                <button className="primary-btn" style={{ margin: 0 }} onClick={generateSeating}>Create Seating Plan</button>
+            <div className="panel no-print" style={{ textAlign: 'center' }}>
+              <h2>Final Step: Generate Chart</h2>
+              <p style={{ color: 'var(--text-muted)', margin: '0 0 24px 0' }}>Ensure your classes and rooms are correct, then click below to interleave the students.</p>
+              
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+                <button className="btn btn-primary" onClick={generateSeating}>Generate Layout</button>
                 {plan.length > 0 && (
-                  <button className="primary-btn" style={{ background: '#15803d', margin: 0 }} onClick={() => window.print()}>Print / Save as PDF</button>
+                  <button className="btn btn-success" onClick={() => window.print()}>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Print / Save PDF
+                  </button>
                 )}
               </div>
             </div>
@@ -265,63 +380,50 @@ export default function App() {
             {plan.length > 0 && (
               <div>
                 {plan.map((room, index) => (
-                  <div key={room.id} className="page-break" style={{ marginBottom: '60px' }}>
+                  <div key={room.id} className="page-break" style={{ marginBottom: '80px' }}>
                     
-                    {/* Header */}
-                    <div style={{ borderBottom: '4px solid #000', paddingBottom: '15px', marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                    {/* Document Header */}
+                    <div className="print-header">
                       <div>
-                        <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#555', textTransform: 'uppercase', letterSpacing: '1px' }}>Official Seating Chart</div>
-                        <h2 style={{ margin: '5px 0 0 0', fontSize: '36px', color: '#000' }}>{room.name}</h2>
+                        <div className="print-meta">Official Seating Chart</div>
+                        <h2 className="print-title">{room.name}</h2>
                       </div>
-                      <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                      <div className="print-meta">
                         Page {index + 1} of {plan.length}
                       </div>
                     </div>
                     
                     {/* Front of Room Indicator */}
-                    <div style={{ 
-                      textAlign: 'center', background: '#e5e7eb', padding: '10px', 
-                      fontWeight: 'bold', letterSpacing: '3px', marginBottom: '30px',
-                      border: '2px solid #000', borderRadius: '4px'
-                    }}>
-                      FRONT OF CLASSROOM (BOARD)
+                    <div className="front-board">
+                      FRONT OF CLASSROOM / BOARD
                     </div>
 
                     {/* True Physical Grid Layout */}
-                    <div style={{ 
-                      display: 'grid', 
-                      gridTemplateColumns: `repeat(${room.cols}, 1fr)`, 
-                      gap: '20px' 
-                    }}>
+                    <div className="desk-grid" style={{ gridTemplateColumns: `repeat(${room.cols}, 1fr)` }}>
                       {room.layout.flatMap((row, rIdx) => 
                         row.map((desk, cIdx) => (
                           
                           /* A Single Desk */
-                          <div key={`${rIdx}-${cIdx}`} style={{ border: '3px solid #000', borderRadius: '8px', overflow: 'hidden', pageBreakInside: 'avoid' }}>
+                          <div key={`${rIdx}-${cIdx}`} className="desk">
                             
-                            {/* Desk Coordinate Label */}
-                            <div style={{ background: '#000', color: '#fff', textAlign: 'center', padding: '8px', fontSize: '14px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                            <div className="desk-label">
                               Row {rIdx + 1} &bull; Col {cIdx + 1}
                             </div>
                             
-                            {/* Seats on the Desk */}
-                            <div style={{ display: 'flex', padding: '10px', gap: '10px', background: '#fff' }}>
+                            <div className="seats-container">
                               {desk.map((student, sIdx) => (
                                 <div 
                                   key={sIdx} 
-                                  style={{
-                                    flex: 1, padding: '15px 10px', textAlign: 'center', borderRadius: '4px',
-                                    border: student ? '2px solid #000' : '2px dashed #aaa',
-                                    backgroundColor: student ? getClassColor(student.className) : '#fafafa'
-                                  }}
+                                  className={`seat ${!student ? 'seat-empty' : ''}`}
+                                  style={{ backgroundColor: student ? getClassColor(student.className) : undefined }}
                                 >
                                   {student ? (
                                     <>
-                                      <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#333', marginBottom: '8px' }}>{student.className}</div>
-                                      <div style={{ fontSize: '20px', fontWeight: '900', color: '#000' }}>{student.rollNo}</div>
+                                      <div className="seat-class">{student.className}</div>
+                                      <div className="seat-roll">{student.rollNo}</div>
                                     </>
                                   ) : (
-                                    <span style={{ fontSize: '14px', color: '#888' }}>Empty</span>
+                                    <span>Empty</span>
                                   )}
                                 </div>
                               ))}
