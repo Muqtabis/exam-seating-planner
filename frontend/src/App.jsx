@@ -213,7 +213,7 @@ export default function App() {
                 <div style={{ flex: '0 1 120px' }}>
                   <label className="form-label">Rows</label>
                   <input className="input-field" type="number" min="1" value={roomForm.rows} onChange={e => setRoomForm({...roomForm, rows: Number(e.target.value)})} />
-                  <span className="help-text">Vertical rows</span>
+                  <span className="help-text">Horizontal rows</span>
                 </div>
 
                 <div style={{ flex: '0 1 120px' }}>
@@ -239,7 +239,7 @@ export default function App() {
                   <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', background: '#fff', border: '2px solid #000', borderRadius: '8px' }}>
                     <div style={{ fontSize: '18px' }}>
                       <strong>{r.name}</strong> 
-                      <span style={{ color: '#555', marginLeft: '15px' }}>{r.rows} rows × {r.cols} desks. <strong>Total Capacity: {r.rows * r.cols * r.studentsPerBench}</strong></span>
+                      <span style={{ color: '#555', marginLeft: '15px' }}>{r.rows} rows × {r.cols} columns. <strong>Total Capacity: {r.rows * r.cols * r.studentsPerBench}</strong></span>
                     </div>
                     <button onClick={() => deleteRoom(r.id)} style={{ background: '#fff', border: '2px solid #cc0000', color: '#cc0000', padding: '8px 16px', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>Remove</button>
                   </div>
@@ -278,59 +278,58 @@ export default function App() {
                       </div>
                     </div>
                     
-                    {/* Rows Container */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                      {room.layout.map((row, rIdx) => (
-                        <div key={rIdx} style={{ display: 'flex', gap: '20px', paddingBottom: '30px', borderBottom: '2px dashed #ccc' }}>
+                    {/* Front of Room Indicator */}
+                    <div style={{ 
+                      textAlign: 'center', background: '#e5e7eb', padding: '10px', 
+                      fontWeight: 'bold', letterSpacing: '3px', marginBottom: '30px',
+                      border: '2px solid #000', borderRadius: '4px'
+                    }}>
+                      FRONT OF CLASSROOM (BOARD)
+                    </div>
+
+                    {/* True Physical Grid Layout */}
+                    <div style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: `repeat(${room.cols}, 1fr)`, 
+                      gap: '20px' 
+                    }}>
+                      {room.layout.flatMap((row, rIdx) => 
+                        row.map((desk, cIdx) => (
                           
-                          {/* Row Marker */}
-                          <div style={{ width: '80px', display: 'flex', alignItems: 'center' }}>
-                            <div style={{ background: '#000', color: '#fff', padding: '10px', fontWeight: 'bold', fontSize: '20px', textAlign: 'center', width: '100%', borderRadius: '4px' }}>
-                              ROW {rIdx + 1}
+                          /* A Single Desk */
+                          <div key={`${rIdx}-${cIdx}`} style={{ border: '3px solid #000', borderRadius: '8px', overflow: 'hidden', pageBreakInside: 'avoid' }}>
+                            
+                            {/* Desk Coordinate Label */}
+                            <div style={{ background: '#000', color: '#fff', textAlign: 'center', padding: '8px', fontSize: '14px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                              Row {rIdx + 1} &bull; Col {cIdx + 1}
                             </div>
-                          </div>
-                          
-                          {/* Desks in the Row */}
-                          <div style={{ display: 'flex', gap: '20px', flex: 1, flexWrap: 'wrap' }}>
-                            {row.map((desk, cIdx) => (
-                              
-                              /* A Single Desk */
-                              <div key={cIdx} style={{ border: '3px solid #000', borderRadius: '8px', overflow: 'hidden', flex: 1, minWidth: '220px' }}>
-                                
-                                {/* Desk Label */}
-                                <div style={{ background: '#000', color: '#fff', textAlign: 'center', padding: '6px', fontSize: '14px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                  Desk {cIdx + 1}
+                            
+                            {/* Seats on the Desk */}
+                            <div style={{ display: 'flex', padding: '10px', gap: '10px', background: '#fff' }}>
+                              {desk.map((student, sIdx) => (
+                                <div 
+                                  key={sIdx} 
+                                  style={{
+                                    flex: 1, padding: '15px 10px', textAlign: 'center', borderRadius: '4px',
+                                    border: student ? '2px solid #000' : '2px dashed #aaa',
+                                    backgroundColor: student ? getClassColor(student.className) : '#fafafa'
+                                  }}
+                                >
+                                  {student ? (
+                                    <>
+                                      <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#333', marginBottom: '8px' }}>{student.className}</div>
+                                      <div style={{ fontSize: '20px', fontWeight: '900', color: '#000' }}>{student.rollNo}</div>
+                                    </>
+                                  ) : (
+                                    <span style={{ fontSize: '14px', color: '#888' }}>Empty</span>
+                                  )}
                                 </div>
-                                
-                                {/* Seats on the Desk */}
-                                <div style={{ display: 'flex', padding: '10px', gap: '10px', background: '#fff' }}>
-                                  {desk.map((student, sIdx) => (
-                                    <div 
-                                      key={sIdx} 
-                                      style={{
-                                        flex: 1, padding: '15px 10px', textAlign: 'center', borderRadius: '4px',
-                                        border: student ? '2px solid #000' : '2px dashed #aaa',
-                                        backgroundColor: student ? getClassColor(student.className) : '#fafafa'
-                                      }}
-                                    >
-                                      {student ? (
-                                        <>
-                                          <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#333', marginBottom: '8px' }}>{student.className}</div>
-                                          <div style={{ fontSize: '22px', fontWeight: '900', color: '#000' }}>{student.rollNo}</div>
-                                        </>
-                                      ) : (
-                                        <span style={{ fontSize: '14px', color: '#888' }}>Empty</span>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
+                              ))}
+                            </div>
 
-                              </div>
-                            ))}
                           </div>
-
-                        </div>
-                      ))}
+                        ))
+                      )}
                     </div>
 
                   </div>
